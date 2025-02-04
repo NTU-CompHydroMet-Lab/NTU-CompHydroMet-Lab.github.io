@@ -1,0 +1,25 @@
+{
+  "locations": [
+    {
+      "lat": 25.0174,
+      "lng": 121.5405,
+      "title": "Lab Meeting at NTU",
+      "image": "images/IMG_9247.jpg",
+      "description": "Weekly research discussion and knowledge sharing"
+    },
+    {
+      "lat": 25.0336,
+      "lng": 121.5650,
+      "title": "Team Building",
+      "image": "images/IMG_9247.jpg",
+      "description": "Annual team building activity in Taipei"
+    },
+    {
+      "lat": 48.23414585443416, 
+      "lng": 16.417421296399567,
+      "title": "2024 EGU Conference",
+      "image": "images/group_photo_2024egu.jpg",
+      "description": "Conference Presentation"
+    }
+  ]
+}
