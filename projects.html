@@ -240,7 +240,7 @@
           const title = e.target.getAttribute('data-title');
           const abstract = e.target.getAttribute('data-abstract');
           modalTitle.textContent = title;
-          modalAbstract.textContent = abstract;
+          modalAbstract.innerHTML = abstract.replace(/\n/g, '<br>');// 將換行轉為 <br>
           modal.style.display = "block";
         }
       });
