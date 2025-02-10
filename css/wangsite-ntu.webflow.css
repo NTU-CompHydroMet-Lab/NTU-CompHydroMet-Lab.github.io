@@ -5044,9 +5044,11 @@ figcaption {
   align-self: auto;
   margin-top: 0;
   padding-top: 10%;
-  transition: all .275s;
 }
-
+.intro_card img{
+  opacity: 1;
+  transition: all .275s ease-in-out;
+}
 .intro_card:hover {
   clear: none;
   opacity: 1;
@@ -5067,16 +5069,17 @@ figcaption {
   -webkit-text-fill-color: inherit;
   object-fit: contain;
   background-clip: border-box;
-  width: 80%;
+  width: 100%;
   height: 40%;
-  margin-left: 10%;
+  /* margin-left: 10%; */
 }
 
-.intro_topic:hover {
+.intro_topic:hover,
+.intro_card:hover .intro_topic {
   box-sizing: border-box;
   aspect-ratio: auto;
   object-fit: contain;
-  height: 40%;
+  height: 50%;
 }
 
 .intro_description {
@@ -5103,15 +5106,11 @@ figcaption {
   width: 80%;
   margin-left: 8%;
   font-size: 18px;
-  opacity: 0;           /* 添加這行 */
-  visibility: hidden;   /* 添加這行 */
-  transform: translateY(20px);  /* 添加這行 */
-  transition: all 0.1s ease;    /* 添加這行 */
+  display: none;
 }
+
 .intro_card:hover .intro_desc-content {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+  display: block;
 }
 
 .intro_card-hover {
