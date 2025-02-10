@@ -2719,7 +2719,7 @@ figcaption {
 }
 
 .home-intro-link-block {
-  background-image: url('../images/Home-Business-1.jpg');
+  background-image: url('../images/index_snapshot/pybl-github-snapshot.png');
   background-position: 50% 0;
   background-size: cover;
   border-radius: 3px;
@@ -2736,14 +2736,14 @@ figcaption {
 }
 
 .home-intro-link-block._2 {
-  background-image: url('../images/copula-publishment-snapshot.png'), url('../images/Home-Business-2.jpg');
+  background-image: url('../images/index_snapshot/copula-publishment-snapshot.png'), url('../images/Home-Business-2.jpg');
   background-position: 50% 0, 50% 0;
   background-size: cover, auto;
   height: 450px;
 }
 
 .home-intro-link-block._3 {
-  background-image: url('../images/pybl-preprint-snapshot.png');
+  background-image: url('../images/index_snapshot/pybl-preprint-snapshot.png');
 }
 
 .intro-block-overlay {
