@@ -99,7 +99,7 @@
     </div>
   </div>
   <div class="subpage-header blog-2">
-    <h2 class="subpage-title">Publications</h2>
+    <h2 class="subpage-title">Publication</h2>
   </div>
   <div class="section">
     <div class="w-container">
@@ -111,9 +111,9 @@
       </div>
 
       <div class="publication-section">
-        <h3>Conference Abstract/Paper</h3>
+        <h3>Conference Paper</h3>
         <div id="conferences" class="csl-bib-body">
-          <div class="loading">Loading conferences...</div>
+          <div class="loading">Loading conference papers...</div>
         </div>
       </div>
     </div>
@@ -125,7 +125,7 @@
   <script>
     const API_KEY = 'VSE2qAOmK5QzeNO5aEdy4cE1';
     const GROUP_ID = '4944983';
-    
+
     const URLS = {
         conferences: `https://api.zotero.org/groups/${GROUP_ID}/collections/H4JXSMX7/items`,
         publications: `https://api.zotero.org/groups/${GROUP_ID}/collections/3GK354C9/items`
@@ -143,12 +143,27 @@
         return text.replace(doiRegex, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
     }
 
+    // **support cache mechanism**
     async function fetchZoteroData(type) {
+        const cacheKey = `zotero_${type}`;
+        const cacheExpiryKey = `${cacheKey}_expiry`;
+        const now = Date.now();
+        const cacheExpiry = localStorage.getItem(cacheExpiryKey);
+        const cacheData = localStorage.getItem(cacheKey);
+
+        // **check cache with expiry time (10 minutes)**
+        if (cacheData && cacheExpiry && now < parseInt(cacheExpiry)) {
+            console.log(`Using cached data for ${type}`);
+            return JSON.parse(cacheData);
+        }
+
+        // **fetch data from API**
         const queryString = new URLSearchParams(fetchParams).toString();
         try {
             const response = await fetch(`${URLS[type]}?${queryString}`, {
                 headers: {
-                    'Authorization': `Bearer ${API_KEY}`
+                    'Zotero-API-Key': API_KEY,  // **符合 Zotero API 规范**
+                    'Accept': 'application/json'
                 }
             });
 
@@ -157,6 +172,11 @@
             }
 
             const data = await response.json();
+
+            // **store data in localStorage with expiry time (10 minutes)**
+            localStorage.setItem(cacheKey, JSON.stringify(data));
+            localStorage.setItem(cacheExpiryKey, (now + 10 * 60 * 1000).toString());
+
             return data;
         } catch (error) {
             console.error(`Error fetching ${type}:`, error);
@@ -182,18 +202,23 @@
             .join('\n');
     }
 
+    // **parallel API calls**
     async function loadAllData() {
-        const [publicationsData, conferencesData] = await Promise.all([
-            fetchZoteroData('publications'),
-            fetchZoteroData('conferences')
-        ]);
+        try {
+            const [publicationsData, conferencesData] = await Promise.all([
+                fetchZoteroData('publications'),
+                fetchZoteroData('conferences')
+            ]);
 
-        displayEntries(publicationsData, 'publications');
-        displayEntries(conferencesData, 'conferences');
+            displayEntries(publicationsData, 'publications');
+            displayEntries(conferencesData, 'conferences');
+        } catch (error) {
+            console.error('Error loading Zotero data:', error);
+        }
     }
 
-    // Load data when the page loads
+    // **initialize**
     document.addEventListener('DOMContentLoaded', loadAllData);
-  </script>
+</script>
 </body>
 </html>
