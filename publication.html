@@ -123,59 +123,33 @@
   <script src="js/webflow.js" type="text/javascript"></script>
 
   <script>
-    const API_KEY = 'VSE2qAOmK5QzeNO5aEdy4cE1';
-    const GROUP_ID = '4944983';
-
     const URLS = {
-        conferences: `https://api.zotero.org/groups/${GROUP_ID}/collections/H4JXSMX7/items`,
-        publications: `https://api.zotero.org/groups/${GROUP_ID}/collections/3GK354C9/items`
+        conferences: '/assests/publication/Conference.html',
+        publications: '/assests/publication/Publications.html'
     };
 
-    const fetchParams = {
-        include: 'bib',
-        format: 'json',
-        style: 'apa',
-        sort: 'date'
-    };
-
-    function convertDoiToLink(text) {
-        const doiRegex = /(https:\/\/doi\.org\/[^\s<]+)/g;
-        return text.replace(doiRegex, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
-    }
-
-    // **support cache mechanism**
-    async function fetchZoteroData(type) {
-        const cacheKey = `zotero_${type}`;
+    // Cache mechanism for local files
+    async function fetchLocalData(type) {
+        const cacheKey = `local_${type}`;
         const cacheExpiryKey = `${cacheKey}_expiry`;
         const now = Date.now();
         const cacheExpiry = localStorage.getItem(cacheExpiryKey);
         const cacheData = localStorage.getItem(cacheKey);
 
-        // **check cache with expiry time (10 minutes)**
         if (cacheData && cacheExpiry && now < parseInt(cacheExpiry)) {
             console.log(`Using cached data for ${type}`);
-            return JSON.parse(cacheData);
+            return cacheData;
         }
 
-        // **fetch data from API**
-        const queryString = new URLSearchParams(fetchParams).toString();
         try {
-            const response = await fetch(`${URLS[type]}?${queryString}`, {
-                headers: {
-                    'Zotero-API-Key': API_KEY,  // **符合 Zotero API 规范**
-                    'Accept': 'application/json'
-                }
-            });
-
+            const response = await fetch(URLS[type]);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
-
-            // **store data in localStorage with expiry time (10 minutes)**
-            localStorage.setItem(cacheKey, JSON.stringify(data));
-            localStorage.setItem(cacheExpiryKey, (now + 10 * 60 * 1000).toString());
+            const data = await response.text();
+            localStorage.setItem(cacheKey, data);
+            localStorage.setItem(cacheExpiryKey, (now + 60 * 60 * 1000).toString());
 
             return data;
         } catch (error) {
@@ -187,38 +161,74 @@
         }
     }
 
-    function displayEntries(data, containerId) {
+    function extractYear(citation) {
+        const yearMatch = citation.match(/\((\d{4})\)/);
+        return yearMatch ? parseInt(yearMatch[1]) : 0;
+    }
+
+    function sortCitationsByYear(htmlContent) {
+        if (!htmlContent) return '';
+        
+        // Create a temporary div to parse HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlContent;
+        
+        // Get all citation entries
+        const citations = Array.from(tempDiv.getElementsByClassName('csl-entry'));
+        const citationsWithSpans = [];
+        
+        // Group citations with their following span elements
+        for (let i = 0; i < citations.length; i++) {
+            const citation = citations[i];
+            const nextElement = citation.nextElementSibling;
+            const year = extractYear(citation.textContent);
+            
+            citationsWithSpans.push({
+                year: year,
+                elements: [citation.outerHTML]
+            });
+            
+            if (nextElement && nextElement.tagName.toLowerCase() === 'span') {
+                citationsWithSpans[citationsWithSpans.length - 1].elements.push(nextElement.outerHTML);
+            }
+        }
+        
+        // Sort by year in descending order
+        citationsWithSpans.sort((a, b) => b.year - a.year);
+        
+        // Combine all elements back together
+        return citationsWithSpans
+            .map(item => item.elements.join('\n'))
+            .join('\n');
+    }
+
+    function displayEntries(htmlContent, containerId) {
         const container = document.getElementById(containerId);
-        if (!data || !data.length) {
+        if (!htmlContent) {
             container.innerHTML = '<div class="loading">No entries found</div>';
             return;
         }
 
-        container.innerHTML = data
-            .map(item => {
-                const bibWithLinks = convertDoiToLink(item.bib);
-                return `<div class="csl-entry">${bibWithLinks}</div>`;
-            })
-            .join('\n');
+        // Sort and display the citations
+        const sortedContent = sortCitationsByYear(htmlContent);
+        container.innerHTML = sortedContent;
     }
 
-    // **parallel API calls**
     async function loadAllData() {
         try {
             const [publicationsData, conferencesData] = await Promise.all([
-                fetchZoteroData('publications'),
-                fetchZoteroData('conferences')
+                fetchLocalData('publications'),
+                fetchLocalData('conferences')
             ]);
 
             displayEntries(publicationsData, 'publications');
             displayEntries(conferencesData, 'conferences');
         } catch (error) {
-            console.error('Error loading Zotero data:', error);
+            console.error('Error loading local data:', error);
         }
     }
 
-    // **initialize**
     document.addEventListener('DOMContentLoaded', loadAllData);
-</script>
+  </script>
 </body>
 </html>
