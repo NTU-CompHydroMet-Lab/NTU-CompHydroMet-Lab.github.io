@@ -4050,7 +4050,7 @@ figcaption {
   -webkit-text-fill-color: inherit;
   object-fit: cover;
   background-color: #f6f5f5;
-  background-image: linear-gradient(#68686880, #68686880), url('../images/IMG_3012.JPG'), url('../images/IMG_9247.jpg');
+  background-image: linear-gradient(#68686880, #68686880), url('../images/IMG_3012.JPG');
   background-position: 0 0, 0 0, 50%;
   background-size: auto, contain, auto;
   background-attachment: scroll, scroll, scroll;

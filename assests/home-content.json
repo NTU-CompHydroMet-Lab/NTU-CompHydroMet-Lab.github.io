@@ -1,0 +1,45 @@
+{
+    "sections": [
+        {
+            "type": "tool",
+            "href": "https://github.com/NTU-CompHydroMet-Lab/pyBL",
+            "button": {
+                "text": "Go to Github",
+                "class": ""
+            },
+            "title": "New Public Tool",
+            "description": "pyBL: An open-source Python package for stochastic modeling of rainfall using the Bartlett-Lewis Rectangular Pulse model.",
+            "wrapperClass": "",
+            "animation": "fade-in-zoom",
+            "image": "../images/index_snapshot/pybl-github-snapshot.png"
+        },
+        {
+            "type": "preprint",
+            "href": "https://doi.org/10.5194/egusphere-2024-1918",
+            "button": {
+                "text": "Go to article",
+                "class": "_2"
+            },
+            "title": "Latest Publishment",
+            "description": "pyBL: An open-source Python package for stochastic modeling of rainfall using the Bartlett-Lewis Rectangular Pulse model.",
+            "wrapperClass": "right",
+            "animation": "fade-in-zoom-2",
+            "image": "../images/index_snapshot/pybl-publishment-snapshot.png"
+            
+        },
+        {
+            "type": "publication",
+            "href": "https://doi.org/10.5194/hess-29-1-2025",
+            "button": {
+                "text": "Go to article",
+                "class": "_3"
+            },
+            "title": "Latest Publishment",
+            "description": "Modelling convective cell lifecycles with a copula-based approach",
+            "wrapperClass": "mid",
+            "animation": "fade-in-zoom-3",
+            "image": "../images/index_snapshot/copula-publishment-snapshot.png"
+
+        }
+    ]
+}
