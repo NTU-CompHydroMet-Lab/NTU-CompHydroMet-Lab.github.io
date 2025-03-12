@@ -136,10 +136,10 @@
         const cacheExpiry = localStorage.getItem(cacheExpiryKey);
         const cacheData = localStorage.getItem(cacheKey);
 
-        if (cacheData && cacheExpiry && now < parseInt(cacheExpiry)) {
-            console.log(`Using cached data for ${type}`);
-            return cacheData;
-        }
+        // if (cacheData && cacheExpiry && now < parseInt(cacheExpiry)) {
+        //     console.log(`Using cached data for ${type}`);
+        //     return cacheData;
+        // }
 
         try {
             const response = await fetch(URLS[type]);
@@ -148,8 +148,8 @@
             }
 
             const data = await response.text();
-            localStorage.setItem(cacheKey, data);
-            localStorage.setItem(cacheExpiryKey, (now + 60 * 60 * 1000).toString());
+            // localStorage.setItem(cacheKey, data);
+            // localStorage.setItem(cacheExpiryKey, (now + 60 * 60 * 1000).toString());
 
             return data;
         } catch (error) {
